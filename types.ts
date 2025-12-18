@@ -12,6 +12,12 @@ export interface GroundingSource {
   uri: string;
 }
 
+export interface NewsItem {
+  title: string;
+  impact: 'Positive' | 'Negative' | 'Neutral';
+  description: string;
+}
+
 export interface PredictionResult {
   predictedOpen: number;
   predictedHigh: number;
@@ -23,8 +29,15 @@ export interface PredictionResult {
   sentimentAnalysis: string;
   autoFetchedData?: {
     niftyClose: string;
-    giftNifty: string;
-    usMarkets: string;
+    giftNiftyNightSession: string;
+    giftNiftyMorningSession: string;
+    globalCues: string;
+    marketBasis: string;
+  };
+  marketIntelligence: {
+    governmentOrders: NewsItem[];
+    corporateActions: NewsItem[];
+    macroNews: NewsItem[];
   };
   sources?: GroundingSource[];
 }

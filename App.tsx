@@ -27,7 +27,7 @@ const App: React.FC = () => {
       setStatus(PredictionStatus.SUCCESS);
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'Prediction failed. The market data might be unavailable or formatted incorrectly.');
+      setError(err.message || 'Prediction failed. Global market data might be undergoing maintenance or blocked.');
       setStatus(PredictionStatus.ERROR);
     }
   };
@@ -47,7 +47,7 @@ const App: React.FC = () => {
           <div className="flex items-center gap-4 text-xs font-medium text-slate-400">
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Live Indicators Active
+              Timeline Engine Active
             </div>
           </div>
         </div>
@@ -55,9 +55,9 @@ const App: React.FC = () => {
 
       <main className="max-w-6xl mx-auto px-4 mt-8">
         <header className="mb-10 text-center md:text-left">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-2 tracking-tight">AI Market Intelligence</h1>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-2 tracking-tight">Temporal Market Intelligence</h1>
           <p className="text-slate-400 max-w-2xl leading-relaxed">
-            Automatically scan global indices and GIFT Nifty movements using Google Search grounding. Get high-probability opening estimates at the click of a button.
+            Deep analysis of the critical 3:30 PM to 9:00 AM window. Our AI reconstructs the overnight global market journey using Google Search grounding to predict today's NSE opening with institutional accuracy.
           </p>
         </header>
 
@@ -86,12 +86,12 @@ const App: React.FC = () => {
               <div className="h-full min-h-[400px] border-2 border-dashed border-slate-800 rounded-2xl flex flex-col items-center justify-center text-center p-10">
                 <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-slate-600 mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-slate-300 mb-2">Automated Prediction Ready</h3>
+                <h3 className="text-xl font-bold text-slate-300 mb-2">3:30 PM - 9:00 AM Analysis Ready</h3>
                 <p className="text-slate-500 max-w-xs mx-auto text-sm">
-                  Click "Smart Auto-Predict" to let the AI fetch the latest data from the web for you.
+                  Smart Auto-Predict will scan global sessions to find today's opening bias.
                 </p>
               </div>
             )}
@@ -99,9 +99,9 @@ const App: React.FC = () => {
             {status === PredictionStatus.LOADING && (
               <div className="h-full min-h-[400px] bg-slate-800/30 rounded-2xl flex flex-col items-center justify-center p-10 animate-pulse border border-indigo-500/20">
                 <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-6"></div>
-                <p className="text-indigo-400 font-medium text-lg">AI is searching market data...</p>
+                <p className="text-indigo-400 font-medium text-lg">Reconstructing Overnight Journey...</p>
                 <p className="text-slate-500 text-sm mt-2 text-center max-w-xs">
-                  Reviewing Nifty close, GIFT Nifty current, and US market sessions...
+                  Scanning GIFT Nifty Night, US Closes, and Asian Openings...
                 </p>
               </div>
             )}
@@ -114,9 +114,9 @@ const App: React.FC = () => {
 
         <footer className="mt-16 pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between gap-6 pb-12">
           <div className="space-y-2">
-            <h4 className="text-sm font-bold text-slate-300 uppercase tracking-widest">Financial Disclosure</h4>
+            <h4 className="text-sm font-bold text-slate-300 uppercase tracking-widest">Institutional Note</h4>
             <p className="text-[11px] text-slate-500 max-w-3xl leading-relaxed">
-              This application uses Gemini 3 Pro with web search capabilities. "Auto-Predict" results are derived from third-party data sources found on the internet. Trading involves significant risk. Always cross-verify data with your broker or official exchange terminals before executing trades.
+              This predictor uses a multi-session basis adjustment algorithm. The difference (basis) between local Nifty and global GIFT Nifty is non-static; our AI calculates this daily at 3:30 PM and projects it to the 9:00 AM morning session for maximum opening accuracy.
             </p>
           </div>
         </footer>

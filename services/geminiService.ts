@@ -9,38 +9,33 @@ export const predictNiftyOpening = async (data: MarketData, isAuto: boolean = fa
   
   if (isAuto) {
     prompt = `
-      Perform professional financial research and predict the Nifty 50 metrics for the current/next session:
+      You are an expert algorithmic trading analyst and financial investigative journalist. 
+      Your task is to provide an EXHAUSTIVE analysis for the Nifty 50 opening at 9:15 AM today.
       
-      STEP 1: Search for the following real-time data:
-      - Latest closing price of Nifty 50 on NSE.
-      - Current price of GIFT Nifty.
-      - Closing performance of US Markets (Dow Jones Industrial Average and Nasdaq).
-      - Recent support and resistance levels for Nifty 50 from analyst reports.
+      PHASE 1: TEMPORAL DATA BRIDGE (3:30 PM Yesterday - 9:00 AM Today)
+      - Find Nifty 50 Prev Close and GIFT Nifty at 3:30 PM (to calculate static basis).
+      - Reconstruct the overnight flow: US Market Close, GIFT Nifty Night Session, and GIFT Nifty Morning Session (Live).
       
-      STEP 2: Based on the searched data, perform a professional analysis to provide:
-      1. Predicted 9:15 AM Opening Point.
-      2. Predicted Day High Point.
-      3. Predicted Day Low Point.
-      
-      Logic:
-      - Use GIFT Nifty for the opening.
-      - Use recent volatility (ATR), support/resistance levels, and global sentiment to estimate the High and Low.
-      
-      Return the response strictly in JSON format.
+      PHASE 2: EXHAUSTIVE NEWS & ORDERS SEARCH (CRITICAL)
+      You MUST search multiple financial sources (NSE/BSE filings, Moneycontrol, Economic Times, Bloomberg, Reuters) for ALL news released after 3:30 PM yesterday:
+      1. GOVERNMENT ORDERS: Search for ANY and ALL Indian government orders, contract wins, or policy changes. Look specifically at sectors like Defence, Railways, Infrastructure, Green Energy, and PSU banks. Do not limit to just 2 items; provide a comprehensive list of all major orders.
+      2. CORPORATE ACTIONS: Major company-specific news for Nifty 50 components and large caps. Include contract wins, earnings beats/misses, M&A announcements, or regulatory approvals.
+      3. MACRO NEWS: All relevant global (US CPI, Fed, BoJ) or domestic (RBI, SEBI) news affecting the broad market sentiment.
+
+      PHASE 3: PREDICTION
+      Calculate: Predicted Open = (GIFT Nifty Current) - (Market Basis) + (News Impact Delta).
+      Calculate: Predicted Day High/Low based on Support/Resistance levels found via search.
+
+      Return the response strictly in JSON format. Ensure the marketIntelligence sections are as populated as possible with real, found data.
     `;
   } else {
     prompt = `
-      As a professional financial analyst, predict Nifty 50 metrics based on these inputs:
-      - Previous Day Nifty 50 Close: ${data.previousNiftyClose}
-      - GIFT Nifty Session: ${data.giftNiftyMorningCurrent}
-      - Global Market Sentiment: ${data.globalSentiment}
-      - Additional Context: ${data.additionalNotes || 'None'}
+      Manual Analysis for Nifty 50 Metrics:
+      - Previous Nifty Close: ${data.previousNiftyClose}
+      - Current GIFT Nifty: ${data.giftNiftyMorningCurrent}
       
-      Provide:
-      1. Predicted 9:15 AM Opening Point.
-      2. Predicted Day High Point.
-      3. Predicted Day Low Point.
-      
+      Calculate predicted Open, High, and Low for 9:15 AM. 
+      Also, search for and categorize all news released overnight based on your general knowledge and real-time grounding.
       Return the response strictly in JSON format.
     `;
   }
@@ -54,25 +49,72 @@ export const predictNiftyOpening = async (data: MarketData, isAuto: boolean = fa
       responseSchema: {
         type: Type.OBJECT,
         properties: {
-          predictedOpen: { type: Type.NUMBER, description: "Calculated opening price for Nifty 50" },
-          predictedHigh: { type: Type.NUMBER, description: "Expected maximum price reached during the day" },
-          predictedLow: { type: Type.NUMBER, description: "Expected minimum price reached during the day" },
-          gapType: { type: Type.STRING, description: "Type of opening (Gap Up/Gap Down/Flat)" },
-          gapPoints: { type: Type.NUMBER, description: "Points delta from previous close" },
-          confidenceScore: { type: Type.NUMBER, description: "Reliability score from 0-100" },
-          reasoning: { type: Type.STRING, description: "Step by step calculation explanation for Open, High, and Low" },
-          sentimentAnalysis: { type: Type.STRING, description: "Brief analysis of global clues" },
+          predictedOpen: { type: Type.NUMBER },
+          predictedHigh: { type: Type.NUMBER },
+          predictedLow: { type: Type.NUMBER },
+          gapType: { type: Type.STRING },
+          gapPoints: { type: Type.NUMBER },
+          confidenceScore: { type: Type.NUMBER },
+          reasoning: { type: Type.STRING, description: "Detailed bridge analysis" },
+          sentimentAnalysis: { type: Type.STRING },
           autoFetchedData: {
             type: Type.OBJECT,
             properties: {
-              niftyClose: { type: Type.STRING, description: "The Nifty close price found" },
-              giftNifty: { type: Type.STRING, description: "The GIFT Nifty price found" },
-              usMarkets: { type: Type.STRING, description: "US market summary found" }
+              niftyClose: { type: Type.STRING },
+              giftNiftyNightSession: { type: Type.STRING },
+              giftNiftyMorningSession: { type: Type.STRING },
+              globalCues: { type: Type.STRING },
+              marketBasis: { type: Type.STRING }
             },
-            required: ["niftyClose", "giftNifty", "usMarkets"]
+            required: ["niftyClose", "giftNiftyNightSession", "giftNiftyMorningSession", "globalCues", "marketBasis"]
+          },
+          marketIntelligence: {
+            type: Type.OBJECT,
+            properties: {
+              governmentOrders: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    title: { type: Type.STRING },
+                    impact: { type: Type.STRING, enum: ["Positive", "Negative", "Neutral"] },
+                    description: { type: Type.STRING }
+                  },
+                  required: ["title", "impact", "description"]
+                },
+                description: "Exhaustive list of all found government contracts and orders."
+              },
+              corporateActions: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    title: { type: Type.STRING },
+                    impact: { type: Type.STRING, enum: ["Positive", "Negative", "Neutral"] },
+                    description: { type: Type.STRING }
+                  },
+                  required: ["title", "impact", "description"]
+                },
+                description: "Exhaustive list of corporate news, earnings, and M&A."
+              },
+              macroNews: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    title: { type: Type.STRING },
+                    impact: { type: Type.STRING, enum: ["Positive", "Negative", "Neutral"] },
+                    description: { type: Type.STRING }
+                  },
+                  required: ["title", "impact", "description"]
+                },
+                description: "All macro-economic events."
+              }
+            },
+            required: ["governmentOrders", "corporateActions", "macroNews"]
           }
         },
-        required: ["predictedOpen", "predictedHigh", "predictedLow", "gapType", "gapPoints", "confidenceScore", "reasoning", "sentimentAnalysis"]
+        required: ["predictedOpen", "predictedHigh", "predictedLow", "gapType", "gapPoints", "confidenceScore", "reasoning", "sentimentAnalysis", "marketIntelligence"]
       }
     }
   });
@@ -92,8 +134,5 @@ export const predictNiftyOpening = async (data: MarketData, isAuto: boolean = fa
     });
   }
   
-  const uniqueSources = Array.from(new Set(sources.map(s => s.uri)))
-    .map(uri => sources.find(s => s.uri === uri)!);
-
-  return { ...result, sources: uniqueSources };
+  return { ...result, sources: Array.from(new Set(sources.map(s => s.uri))).map(uri => sources.find(s => s.uri === uri)!) };
 };
