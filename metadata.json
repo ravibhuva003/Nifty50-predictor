@@ -1,0 +1,5 @@
+{
+  "name": "NiftyPulse AI Predictor",
+  "description": "An advanced AI-powered tool to predict Nifty 50 opening prices at 9:15 AM by analyzing GIFT Nifty sessions and previous day market data using Gemini 3 Pro.",
+  "requestFramePermissions": []
+}
